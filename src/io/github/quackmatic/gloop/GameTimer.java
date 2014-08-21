@@ -7,6 +7,35 @@ package io.github.quackmatic.gloop;
  */
 public class GameTimer {
 	/**
+	 * The default {@link GameTimerTickHandler} for new timers.
+	 * This is null and will raise an error if another tick handler is not set.
+	 */
+	public static final GameTimerTickHandler DEFAULT_TICK_HANDLER = null;
+
+	/**
+	 * The default {@link GameTimerErrorHandler} for new timers.
+	 * This prints the throwable's stack trace.
+	 */
+	public static final GameTimerErrorHandler DEFAULT_ERROR_HANDLER = new GameTimerErrorHandler() {
+		@Override
+		public void handle(Throwable e) {
+			System.err.println("Consider writing your own GameTimerErrorHandler.");
+			e.printStackTrace();
+		}
+	};
+
+	/**
+	 * The default {@link GameTimerCleanupHandler} for new timers.
+	 * This does nothing.
+	 */
+	public static final GameTimerCleanupHandler DEFAULT_CLEANUP_HANDLER = new GameTimerCleanupHandler() {
+		@Override
+		public void cleanup() {
+			// nothing
+		}
+	};
+	
+	/**
 	 * The operation to perform at each interval of the game timer's tick.
 	 */
 	public GameTimerTickHandler tickHandler;
@@ -40,11 +69,17 @@ public class GameTimer {
 	private boolean running;
 	
 	/**
-	 * Create a new GameTimer.
+	 * Create a new GameTimer with default values and handlers.
 	 */
 	public GameTimer() {
-		this.capDelta = false;
 		this.running = false;
+		
+		this
+			.setTickHandler(DEFAULT_TICK_HANDLER)
+			.setErrorHandler(DEFAULT_ERROR_HANDLER)
+			.setCleanupHandler(DEFAULT_CLEANUP_HANDLER)
+			.setInterval(0)
+			.setCapDelta(false);
 	}
 	
 	/**
@@ -126,10 +161,13 @@ public class GameTimer {
 			boolean runningSlowly = false;
 			
 			while(running) {
+				if(interval <= 0) throw new Error("GameTimer interval must be >= 0.");
+				
 				long frameStartTime = System.nanoTime();
 				double givenDelta = capDelta ?
 						Math.min(previousDelta, interval) :
 						previousDelta; // works out the (maybe) capped delta
+						
 				tickHandler.tick(
 						givenDelta,
 						(double)(frameStartTime - beginTime) / 1e+9,
@@ -152,7 +190,7 @@ public class GameTimer {
 						(System.nanoTime() - frameStartTime) / 1e+9;
 			}
 		} catch(InterruptedException e) {
-			
+			// ok
 		} catch(Exception e) {
 			errorHandler.handle(e);
 		} finally {
