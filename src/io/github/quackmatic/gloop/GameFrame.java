@@ -2,11 +2,18 @@ package io.github.quackmatic.gloop;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  * A JFrame implementation that displays a game.
@@ -52,6 +59,79 @@ public class GameFrame extends JFrame {
 			}
 		});
 		
+		this.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				super.mouseMoved(e);
+				game.mouse.x = e.getX();
+				game.mouse.y = e.getY();
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				super.mousePressed(e);
+				game.mouse.x = e.getX();
+				game.mouse.y = e.getY();
+				
+				if(SwingUtilities.isLeftMouseButton(e)) {
+					game.mouseButtons[Game.MOUSE_BUTTON_LEFT] = true;
+					game.mouseDown(Game.MOUSE_BUTTON_LEFT);
+				} else if(SwingUtilities.isMiddleMouseButton(e)) {
+					game.mouseButtons[Game.MOUSE_BUTTON_MID] = true;
+					game.mouseDown(Game.MOUSE_BUTTON_MID);
+				} else if(SwingUtilities.isRightMouseButton(e)) {
+					game.mouseButtons[game.MOUSE_BUTTON_RIGHT] = true;
+					game.mouseDown(Game.MOUSE_BUTTON_RIGHT);
+				}
+			}
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				super.mouseReleased(e);
+				game.mouse.x = e.getX();
+				game.mouse.y = e.getY();
+				
+				if(SwingUtilities.isLeftMouseButton(e)) {
+					game.mouseButtons[Game.MOUSE_BUTTON_LEFT] = false;
+					game.mouseUp(Game.MOUSE_BUTTON_LEFT);
+				} else if(SwingUtilities.isMiddleMouseButton(e)) {
+					game.mouseButtons[Game.MOUSE_BUTTON_MID] = false;
+					game.mouseUp(Game.MOUSE_BUTTON_MID);
+				} else if(SwingUtilities.isRightMouseButton(e)) {
+					game.mouseButtons[game.MOUSE_BUTTON_RIGHT] = false;
+					game.mouseUp(Game.MOUSE_BUTTON_RIGHT);
+				}
+			}
+			
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				super.mouseWheelMoved(e);
+				game.mouseScroll(e.getWheelRotation());
+			}
+		});
+		
+		this.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				super.keyPressed(e);
+				int key = e.getKeyCode();
+				if(key >= 0 && key < Game.KEY_ARRAY_SIZE) {
+					game.keyboard[key] = true;
+				}
+				game.keyDown(key, e.getKeyChar());
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				super.keyReleased(e);
+				int key = e.getKeyCode();
+				if(key >= 0 && key < Game.KEY_ARRAY_SIZE) {
+					game.keyboard[key] = true;
+				}
+				game.keyUp(key, e.getKeyChar());
+			}
+		});
+		
 		this.setSize(initialWidth, initialHeight);
 		this.setVisible(true); // get actual w/h
 		resizeGame(); // set buffer size
@@ -73,7 +153,7 @@ public class GameFrame extends JFrame {
 	 * Calls the <i>resize()</i> method on the {@link Game} contained by this GameFrame.
 	 */
 	private void resizeGame() {
-		game.resize(this.getWidth(), this.getHeight());
+		game.resize(this.getContentPane().getWidth(), this.getContentPane().getHeight());
 	}
 	
 	/**
@@ -146,8 +226,8 @@ public class GameFrame extends JFrame {
 	 * @return Returns this, so you can chain these calls.
 	 */
 	public GameFrame stop() {
-		tickTimer.stop(true);
-		drawTimer.stop(true);
+		if(tickTimer != null) tickTimer.stop(true);
+		if(drawTimer != null) drawTimer.stop(true);
 		return this;
 	}
 }

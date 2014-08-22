@@ -1,6 +1,7 @@
 package io.github.quackmatic.gloop;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 /**
@@ -9,15 +10,53 @@ import java.awt.image.BufferedImage;
  */
 public abstract class Game {
 	/**
+	 * Left mouse button.
+	 */
+	public static final int MOUSE_BUTTON_LEFT = 0;
+	
+	/**
+	 * Middle mouse button or scroll wheel.
+	 */
+	public static final int MOUSE_BUTTON_MID = 1;
+	
+	/**
+	 * Right mouse button.
+	 */
+	public static final int MOUSE_BUTTON_RIGHT = 2;
+	
+	/**
+	 * Size of the <i>keyboard</i> {@link Boolean}[] array.
+	 */
+	public static final int KEY_ARRAY_SIZE = 1024;
+	
+	/**
 	 * The screen that a game container will render to a render target.
 	 */
 	protected GameScreen gameScreen;
+	
+	/**
+	 * The location of the mouse on the screen.
+	 */
+	protected Point mouse;
+	
+	/**
+	 * The state of all the mouse buttons.
+	 */
+	protected boolean[] mouseButtons;
+	
+	/**
+	 * The state of all the keyboard keys.
+	 */
+	protected boolean[] keyboard;
 	
 	/**
 	 * Creates a new instance of this game.
 	 */
 	public Game() {
 		gameScreen = null;
+		mouse = new Point(-1, -1);
+		mouseButtons = new boolean[3];
+		keyboard = new boolean[1024];
 	}
 
 	/**
@@ -34,8 +73,8 @@ public abstract class Game {
 				pixelScale);
 		} else {
 			// reinit framebuffers
-			gameScreen.setWidth(componentWidth / pixelScale);
-			gameScreen.setHeight(componentHeight / pixelScale);
+			gameScreen.setWidth((int)Math.ceil((double)componentWidth / pixelScale));
+			gameScreen.setHeight((int)Math.ceil((double)componentHeight / pixelScale));
 			gameScreen.setScale(pixelScale);
 			gameScreen.recreateBuffers();
 		}
@@ -86,6 +125,40 @@ public abstract class Game {
 	 * @return The time, in seconds, for every game tick.
 	 */
 	public abstract double getTickTime();
+	
+	/**
+	 * Called when a mouse button is pressed.
+	 * @param button The mouse button.
+	 */
+	public abstract void mouseDown(int button);
+	
+	/**
+	 * Called when a mouse button is released.
+	 * @param button The mouse button.
+	 */
+	public abstract void mouseUp(int button);
+	
+	/**
+	 * Called when the mouse wheel is scrolled.
+	 * @param delta The scroll amount (negative is up, positive is down.)
+	 */
+	public abstract void mouseScroll(int delta);
+	
+	/**
+	 * Called when a key is pressed.
+	 * @param key The key code.
+	 * @param keyChar The key character.
+	 * @see {@link java.awt.event.KeyEvent}
+	 */
+	public abstract void keyDown(int key, char keyChar);
+	
+	/**
+	 * Called when a key is released.
+	 * @param key The key code.
+	 * @param keyChar The key character.
+	 * @see {@link java.awt.event.KeyEvent}
+	 */
+	public abstract void keyUp(int key, char keyChar);
 	
 	/**
 	 * Perform any operations to be performed at each interval of the {@link GameTimer} controlling
