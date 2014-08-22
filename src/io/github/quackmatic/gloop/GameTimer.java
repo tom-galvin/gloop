@@ -134,23 +134,32 @@ public class GameTimer {
 		this.capDelta = capDelta;
 		return this;
 	}
-	
+
 	/**
 	 * Starts this game timer's thread.
 	 * @return Returns this, so you can chain these calls.
 	 */
 	public GameTimer start() {
-		if(tickThread == null) {
+		return start(false);
+	}
+	
+	/**
+	 * Starts this game timer's thread.
+	 * @param force Force a stop. If true, no exceptions thrown if not running.
+	 * @return Returns this, so you can chain these calls.
+	 */
+	public GameTimer start(boolean force) {
+		if(!running) {
 			(tickThread = new Thread() {
 				@Override
 				public void run() {
 					gameThread();
 				}
 			}).start();
-			return this;
-		} else {
+		} else if(!force) {
 			throw new Error("Game loop is already running.");
 		}
+		return this;
 	}
 	
 	private void gameThread() {
@@ -199,16 +208,32 @@ public class GameTimer {
 	}
 	
 	/**
+	 * Determine if this timer is currently running or not.
+	 * @return Not rocket science, is it?
+	 */
+	public boolean isRunning() {
+		return this.running;
+	}
+	
+	/**
 	 * Stops the game timer. If a tick is already taking place, it will finish first.
 	 * @return Returns this, so you can chain these calls.
 	 */
 	public GameTimer stop() {
-		if(tickThread != null) {
+		return stop(false);
+	}
+	
+	/**
+	 * Stops the game timer. If a tick is already taking place, it will finish first.
+	 * @param force Force a stop. If true, no exceptions thrown if not running.
+	 * @return Returns this, so you can chain these calls.
+	 */
+	public GameTimer stop(boolean force) {
+		if(running) {
 			running = false;
-			tickThread = null;
-			return this;
-		} else {
+		} else if(!force) {
 			throw new Error("Game loop is not currently running.");
 		}
+		return this;
 	}
 }

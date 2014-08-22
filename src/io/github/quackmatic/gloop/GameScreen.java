@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
  * Defines a game screen class that can have multiple buffers.
  * @author Quackmatic
  */
-public class GameScreen {
+public final class GameScreen {
 	private int width;
 	private int height;
 	private int scale;
@@ -15,6 +15,7 @@ public class GameScreen {
 	private Graphics2D[] graphics;
 	private volatile int currentBuffer = 0;
 	private int buffers;
+	private GameEvent resizedEvent;
 	
 	/**
 	 * Create a new double buffered game screen.
@@ -34,9 +35,12 @@ public class GameScreen {
 	 * @param buffers The number of screen buffers. 
 	 */
 	public GameScreen(int initialWidth, int initialHeight, int initialScale, int buffers) {
+		resizedEvent = new GameEvent();
+		
 		setWidth(initialWidth);
 		setHeight(initialHeight);
 		setScale(initialScale);
+		
 		if(buffers < 1) {
 			throw new Error("Cannot have less than one screen buffer.");
 		} else if(buffers > 3) {
@@ -47,6 +51,14 @@ public class GameScreen {
 		this.images = new BufferedImage[getBuffers()];
 		this.graphics = new Graphics2D[getBuffers()];
 		recreateBuffers();
+	}
+	
+	/**
+	 * Gets the {@link GameEvent} raised whenever this game screen is resized.
+	 * @return
+	 */
+	public GameEvent getResizedEvent() {
+		return this.resizedEvent;
 	}
 	
 	/**
@@ -91,7 +103,10 @@ public class GameScreen {
 	 * @return Returns this, so you can chain these calls.
 	 */
 	public GameScreen setWidth(int width) {
-		this.width = width;
+		if(this.width != width) {
+			this.width = width;
+			resizedEvent.raise();
+		}
 		return this;
 	}
 
@@ -109,7 +124,10 @@ public class GameScreen {
 	 * @return Returns this, so you can chain these calls.
 	 */
 	public GameScreen setHeight(int height) {
-		this.height = height;
+		if(this.height != height) {
+			this.height = height;
+			resizedEvent.raise();
+		}
 		return this;
 	}
 	
@@ -127,7 +145,10 @@ public class GameScreen {
 	 * @return Returns this, so you can chain these calls.
 	 */
 	public GameScreen setScale(int scale) {
-		this.scale = scale;
+		if(this.scale != scale) {
+			this.scale = scale;
+			resizedEvent.raise();
+		}
 		return this;
 	}
 	
