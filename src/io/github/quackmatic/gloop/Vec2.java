@@ -33,7 +33,43 @@ public class Vec2 {
 	}
 	
 	public static Vec2 unit(Vec2 v) {
-		return Vec2.div(v, Vec2.mag(v));
+		double mag = Vec2.mag(v);
+		if(mag == 0) return Vec2.zero();
+		else return Vec2.div(v, mag);
+	}
+	
+	public static Vec2 rotate(Vec2 v, double theta) {
+		double sinTheta = Math.sin(theta);
+		double cosTheta = Math.cos(theta);
+		
+		return new Vec2(
+				cosTheta * v.x - sinTheta * v.y,
+				sinTheta * v.x + cosTheta * v.y);
+	}
+	
+	public static Vec2 rotate(Vec2 v, double theta, Vec2 c) {
+		return v.sub(c).rotate(theta).add(c);
+	}
+	
+	public static Vec2 zero() {
+		return new Vec2(0.0, 0.0);
+	}
+	
+	public static double angle(Vec2 v) {
+		return Math.atan2(v.y, v.x);
+	}
+	
+	public static double angleTo(Vec2 v1, Vec2 v2) {
+		double divisor = v1.mag() * v2.mag();
+		if(divisor > 0) {
+			return Vec2.dot(v1, v2) / divisor;
+		} else {
+			return 0;
+		}
+	}
+	
+	public static Vec2 projectAlong(Vec2 v, Vec2 vp) {
+		return vp.unit().mul(v.mag() * v.angleTo(vp));
 	}
 	
 	public Vec2 add(Vec2 v) {
@@ -62,5 +98,25 @@ public class Vec2 {
 	
 	public Vec2 unit() {
 		return Vec2.unit(this);
+	}
+	
+	public Vec2 rotate(double theta) {
+		return Vec2.rotate(this, theta);
+	}
+	
+	public Vec2 rotate(double theta, Vec2 c) {
+		return Vec2.rotate(this, theta, c);
+	}
+	
+	public double angle() {
+		return Vec2.angle(this);
+	}
+	
+	public double angleTo(Vec2 v) {
+		return Vec2.angleTo(this, v);
+	}
+	
+	public Vec2 projectAlong(Vec2 vp) {
+		return Vec2.projectAlong(this, vp);
 	}
 }

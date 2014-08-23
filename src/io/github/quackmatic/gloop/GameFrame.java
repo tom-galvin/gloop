@@ -185,6 +185,7 @@ public class GameFrame extends JFrame {
 			.setErrorHandler(new GameTimerErrorHandler() {
 				@Override
 				public void handle(Throwable e) {
+					e.printStackTrace();
 					JOptionPane.showMessageDialog(
 							thisGameFrame,
 							"Tick: " + e.getMessage(),
@@ -211,6 +212,7 @@ public class GameFrame extends JFrame {
 			.setErrorHandler(new GameTimerErrorHandler() {
 				@Override
 				public void handle(Throwable e) {
+					e.printStackTrace();
 					JOptionPane.showMessageDialog(
 							thisGameFrame,
 							"Draw: " + e.getMessage(),
