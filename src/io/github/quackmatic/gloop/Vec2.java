@@ -1,7 +1,7 @@
 package io.github.quackmatic.gloop;
 
 public class Vec2 {
-	double x, y;
+	public double x, y;
 	
 	public Vec2(double x, double y) {
 		this.x = x;
