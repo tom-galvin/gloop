@@ -54,8 +54,8 @@ public class GameFrame extends JFrame {
 			
 			@Override
 			public void windowOpened(WindowEvent e) {
-				super.windowOpened(e);
 				game.init();
+				super.windowOpened(e);
 			}
 		});
 		
@@ -126,7 +126,7 @@ public class GameFrame extends JFrame {
 				super.keyReleased(e);
 				int key = e.getKeyCode();
 				if(key >= 0 && key < Game.KEY_ARRAY_SIZE) {
-					game.keyboard[key] = true;
+					game.keyboard[key] = false;
 				}
 				game.keyUp(key, e.getKeyChar());
 			}
@@ -175,8 +175,10 @@ public class GameFrame extends JFrame {
 			.setTickHandler(new GameTimerTickHandler() {
 				@Override
 				public void tick(double delta, double total, boolean slow) {
-					game.tick(delta, total, slow);
-					game.draw(delta, total, slow, game.gameScreen.getImage(), game.gameScreen.getGraphics());
+					if(isVisible()) {
+						game.tick(delta, total, slow);
+						game.draw(delta, total, slow, game.gameScreen.getImage(), game.gameScreen.getGraphics());
+					}
 					game.gameScreen.nextBuffer();
 				}
 			})
