@@ -97,7 +97,9 @@ public abstract class Game {
 	 * @param diagonal The diagonal size of the render target component.
 	 * @return The pixel scale to render with.
 	 */
-	public abstract int getScale(int diagonal);
+	public int getScale(int diagonal) {
+		return 1;
+	}
 	
 	/**
 	 * Perform any resource loading for this game.
@@ -118,7 +120,9 @@ public abstract class Game {
 	 * Gets the time, in seconds, for every render frame.
 	 * @return The time, in seconds, for every render frame.
 	 */
-	public abstract double getFrameTime();
+	public double getFrameTime() {
+		return getTickTime();
+	}
 	
 	/**
 	 * Gets the time, in seconds, for every game tick.
@@ -130,19 +134,25 @@ public abstract class Game {
 	 * Called when a mouse button is pressed.
 	 * @param button The mouse button.
 	 */
-	public abstract void mouseDown(int button);
+	public void mouseDown(int button) {
+		
+	}
 	
 	/**
 	 * Called when a mouse button is released.
 	 * @param button The mouse button.
 	 */
-	public abstract void mouseUp(int button);
+	public void mouseUp(int button) {
+		
+	}
 	
 	/**
 	 * Called when the mouse wheel is scrolled.
 	 * @param delta The scroll amount (negative is up, positive is down.)
 	 */
-	public abstract void mouseScroll(int delta);
+	public void mouseScroll(int delta) {
+		
+	}
 	
 	/**
 	 * Called when a key is pressed.
@@ -150,7 +160,9 @@ public abstract class Game {
 	 * @param keyChar The key character.
 	 * @see {@link java.awt.event.KeyEvent}
 	 */
-	public abstract void keyDown(int key, char keyChar);
+	public void keyDown(int key, char keyChar) {
+		
+	}
 	
 	/**
 	 * Called when a key is released.
@@ -158,7 +170,9 @@ public abstract class Game {
 	 * @param keyChar The key character.
 	 * @see {@link java.awt.event.KeyEvent}
 	 */
-	public abstract void keyUp(int key, char keyChar);
+	public void keyUp(int key, char keyChar) {
+		
+	}
 	
 	/**
 	 * Perform any operations to be performed at each interval of the {@link GameTimer} controlling

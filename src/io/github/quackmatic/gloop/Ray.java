@@ -14,7 +14,13 @@ public class Ray {
 		this.dir = new Vec2(Math.sin(theta), Math.cos(theta));
 	}
 	
-	public Vec2 intersectLine(Vec2 l1, Vec2 l2)
+	public Vec2 intersectLine(Vec2 l1, Vec2 l2) {
+		Vec2 result = Vec2.zero();
+		double distance = intersectLine(l1, l2, result);
+		return Double.isNaN(distance) ? null : result;
+	}
+	
+	public double intersectLine(Vec2 l1, Vec2 l2, Vec2 result)
 	{
 	    double xd = l2.x - l1.x, yd = l2.y - l1.y;
 	    double d1 = xd * dir.y, d2 = yd * dir.x;
@@ -31,10 +37,12 @@ public class Ray {
 	                (uv.y - l1.y) / yd;
 	            if(m >= 0 && m <= 1)
 	            {
-	                return new Vec2(uv.x, uv.y);
+	            	result.x = uv.x;
+	            	result.y = uv.y;
+	                return t;
 	            }
 	        }
 	    }
-	    return null;
+	    return Double.NaN;
 	}
 }
