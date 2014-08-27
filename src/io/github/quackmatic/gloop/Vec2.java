@@ -24,12 +24,20 @@ public class Vec2 {
 		return new Vec2(v.x / d, v.y / d);
 	}
 	
+	public static double cross(Vec2 v1, Vec2 v2) {
+		return v1.x * v2.y - v1.y - v2.x;
+	}
+	
 	public static double dot(Vec2 v1, Vec2 v2) {
 		return v1.x * v2.x + v1.y * v2.y;
 	}
 	
+	public static double magSquared(Vec2 v) {
+		return v.x * v.x + v.y * v.y;
+	}
+	
 	public static double mag(Vec2 v) {
-		return Math.sqrt(v.x * v.x + v.y * v.y);
+		return Math.sqrt(Vec2.magSquared(v));
 	}
 	
 	public static Vec2 unit(Vec2 v) {
@@ -72,6 +80,18 @@ public class Vec2 {
 		return vp.unit().mul(v.mag() * v.angleTo(vp));
 	}
 	
+	public static Vec2 reflectOver(Vec2 v, Vec2 axis) {
+		return axis
+				.mul(
+					2.0 * Vec2.dot(axis, v) / 
+					Vec2.magSquared(axis))
+				.sub(v);
+	}
+	
+	public static boolean clockwiseABC(Vec2 a, Vec2 b, Vec2 c) {
+		return b.sub(a).cross(c.sub(b)) < 0;
+	}
+	
 	public Vec2 add(Vec2 v) {
 		return Vec2.add(this, v);
 	}
@@ -88,8 +108,16 @@ public class Vec2 {
 		return Vec2.div(this, d);
 	}
 	
+	public double cross(Vec2 v) {
+		return Vec2.cross(this, v);
+	}
+	
 	public double dot(Vec2 v) {
 		return Vec2.dot(this, v);
+	}
+	
+	public double magSquared() {
+		return Vec2.magSquared(this);
 	}
 	
 	public double mag() {
@@ -118,5 +146,13 @@ public class Vec2 {
 	
 	public Vec2 projectAlong(Vec2 vp) {
 		return Vec2.projectAlong(this, vp);
+	}
+	
+	public Vec2 reflectOver(Vec2 axis) {
+		return Vec2.reflectOver(this, axis);
+	}
+	
+	public Vec2 clone() {
+		return new Vec2(this.x, this.y);
 	}
 }
