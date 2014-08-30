@@ -64,7 +64,7 @@ public abstract class Game {
 	 * @param componentWidth The width of the parent's render target component.
 	 * @param componentHeight The height of the parent's render target component.
 	 */
-	public void resize(int componentWidth, int componentHeight) {
+	public void componentResize(int componentWidth, int componentHeight) {
 		int pixelScale = getScale(getDiagonal(componentWidth, componentHeight));
 		if(gameScreen == null) {
 			gameScreen = new GameScreen(
@@ -151,6 +151,15 @@ public abstract class Game {
 	 * @param delta The scroll amount (negative is up, positive is down.)
 	 */
 	public void mouseScroll(int delta) {
+		
+	}
+	
+	/**
+	 * Called when the game container's viewport is resized.
+	 * @param bufferWidth The new width of the buffer.
+	 * @param bufferHeight The new height of the buffer.
+	 */
+	public void resized(int bufferWidth, int bufferHeight) {
 		
 	}
 	

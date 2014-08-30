@@ -42,6 +42,7 @@ public class GameFrame extends JFrame {
 			public void componentResized(ComponentEvent e) {
 				super.componentResized(e);
 				resizeGame();
+				game.resized(game.gameScreen.getWidth(), game.gameScreen.getHeight());
 			}
 		});
 		
@@ -153,7 +154,7 @@ public class GameFrame extends JFrame {
 	 * Calls the <i>resize()</i> method on the {@link Game} contained by this GameFrame.
 	 */
 	private void resizeGame() {
-		game.resize(this.getContentPane().getWidth(), this.getContentPane().getHeight());
+		game.componentResize(this.getContentPane().getWidth(), this.getContentPane().getHeight());
 	}
 	
 	/**
@@ -177,7 +178,6 @@ public class GameFrame extends JFrame {
 				public void tick(double delta, double total, boolean slow) {
 					if(isVisible()) {
 						game.tick(delta, total, slow);
-						game.draw(delta, total, slow, game.gameScreen.getImage(), game.gameScreen.getGraphics());
 					}
 					game.gameScreen.nextBuffer();
 				}
@@ -206,6 +206,7 @@ public class GameFrame extends JFrame {
 			.setTickHandler(new GameTimerTickHandler() {
 				@Override
 				public void tick(double delta, double total, boolean slow) {
+					game.draw(delta, total, slow, game.gameScreen.getImage(), game.gameScreen.getGraphics());
 					panelRenderer.repaint();
 				}
 			})

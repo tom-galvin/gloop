@@ -20,6 +20,7 @@ public class GameScreenPanelRenderer extends JPanel {
 	 * @param gameScreen The {@link GameScreen} to render.
 	 */
 	public GameScreenPanelRenderer(GameScreen gameScreen) {
+		this.setDoubleBuffered(true);
 		setGameScreen(gameScreen);
 	}
 	

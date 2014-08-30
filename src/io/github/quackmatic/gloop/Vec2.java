@@ -25,7 +25,7 @@ public class Vec2 {
 	}
 	
 	public static double cross(Vec2 v1, Vec2 v2) {
-		return v1.x * v2.y - v1.y - v2.x;
+		return v1.x * v2.y - v1.y * v2.x;
 	}
 	
 	public static double dot(Vec2 v1, Vec2 v2) {
